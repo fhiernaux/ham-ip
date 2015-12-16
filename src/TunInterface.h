@@ -26,6 +26,7 @@ protected:
 	struct ifreq interfaceId;
 	void createTunInterface(const char *dev);
 	void setMtu(int mtu);
+	void setTxQueueLen(int txQLen);
 };
 
 #endif /* TUNINTERFACE_H_ */

@@ -21,6 +21,7 @@ using namespace std;
 TunInterface::TunInterface(const char* dev) {
 	createTunInterface(dev);
 	setMtu(150);
+	setTxQueueLen(10);
 }
 
 TunInterface::~TunInterface() {
@@ -74,6 +75,17 @@ void TunInterface::setMtu(int mtu) {
 	interfaceId.ifr_mtu = mtu;
 	int err;
 	if ((err = ioctl(configSocketFd, SIOCSIFMTU, (void *) &interfaceId)) < 0) {
+		if (err == -EPERM)
+			cerr << "Permission denied for setting TUN interface MTU" << endl;
+
+		throw runtime_error("Failed to configure TUN interface MTU");
+	}
+}
+
+void TunInterface::setTxQueueLen(int txQLen) {
+	interfaceId.ifr_qlen = txQLen;
+	int err;
+	if ((err = ioctl(configSocketFd, SIOCSIFTXQLEN, (void *) &interfaceId)) < 0) {
 		if (err == -EPERM)
 			cerr << "Permission denied for setting TUN interface MTU" << endl;
 
