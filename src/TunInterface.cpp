@@ -20,43 +20,63 @@ using namespace std;
 
 TunInterface::TunInterface(const char* dev) {
 	createTunInterface(dev);
+	setMtu(150);
 }
 
 TunInterface::~TunInterface() {
-	if (fileDescriptor > 0)
-		close(fileDescriptor);
+	if (tunInterfaceFd > 0)
+		close(tunInterfaceFd);
+
+	if (configSocketFd > 0)
+		close(configSocketFd);
 }
 
 void TunInterface::getOnePacket(Packet& packet) {
 	packet.packetType = RAW_PACKET;
-	packet.packetLen = read(fileDescriptor, &packet.packetData, 1520);
+	packet.packetLen = read(tunInterfaceFd, &packet.packetData, 1520);
 	cerr << "Received packet of length " << packet.packetLen << endl;
 }
 
 void TunInterface::writeOnePacket(Packet& packet) {
 	assert(packet.packetType == RAW_PACKET);
-	int len = write(fileDescriptor, &packet.packetData, packet.packetLen);
+	int len = write(tunInterfaceFd, &packet.packetData, packet.packetLen);
 	cerr << "Send packet of length " << len << endl;
 }
 
 void TunInterface::createTunInterface(const char* dev) {
+	configSocketFd = -1;
 	char tunFile[] = "/dev/net/tun";
 
-	if ((fileDescriptor = open(tunFile, O_RDWR)) < 0)
+	if ((tunInterfaceFd = open(tunFile, O_RDWR)) < 0)
 		throw runtime_error("Failed to open TUN interface");
 
-	struct ifreq interfaceRequest;
-	memset(&interfaceRequest, 0, sizeof(interfaceRequest));
-	interfaceRequest.ifr_flags = IFF_TUN;
+	memset(&interfaceId, 0, sizeof(interfaceId));
+	interfaceId.ifr_flags = IFF_TUN;
 	if (dev)
-		strncpy(interfaceRequest.ifr_name, dev, IFNAMSIZ);
+		strncpy(interfaceId.ifr_name, dev, IFNAMSIZ);
 
 	int err;
-	if ((err = ioctl(fileDescriptor, TUNSETIFF, (void *) &interfaceRequest)) < 0) {
+	if ((err = ioctl(tunInterfaceFd, TUNSETIFF, (void *) &interfaceId)) < 0) {
 		if (err == -EPERM)
 			cerr << "Permission denied for opening TUN interface" << endl;
 
- 		close(fileDescriptor);
+ 		close(tunInterfaceFd);
 		throw runtime_error("Failed to configure TUN interface");
+	}
+
+	configSocketFd = socket(AF_INET, SOCK_DGRAM, 0);
+	if (configSocketFd < 0) {
+		throw runtime_error("Failed to create config socket");
+	}
+}
+
+void TunInterface::setMtu(int mtu) {
+	interfaceId.ifr_mtu = mtu;
+	int err;
+	if ((err = ioctl(configSocketFd, SIOCSIFMTU, (void *) &interfaceId)) < 0) {
+		if (err == -EPERM)
+			cerr << "Permission denied for setting TUN interface MTU" << endl;
+
+		throw runtime_error("Failed to configure TUN interface MTU");
 	}
 }

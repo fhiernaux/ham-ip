@@ -21,9 +21,11 @@ public:
 	void writeOnePacket(Packet &packet);
 
 protected:
-	int fileDescriptor;
-	char interfaceName[IFNAMSIZ];
+	int tunInterfaceFd;
+	int configSocketFd;
+	struct ifreq interfaceId;
 	void createTunInterface(const char *dev);
+	void setMtu(int mtu);
 };
 
 #endif /* TUNINTERFACE_H_ */
