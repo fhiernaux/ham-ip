@@ -10,6 +10,11 @@ enum PacketType {
 	ENCAPSULATED_PACKET
 };
 
+enum Protocol {
+	IPV4,
+	IPV6
+};
+
 /*** Frame format
  * Begin | Callsign | Len | Protocol | Payload | Checksum
  * 1B      6B         1B    1B         256B      2B
@@ -18,7 +23,8 @@ enum PacketType {
 struct Packet {
 	PacketType packetType;
 	uint32_t packetLen;
-	char packetData[1600];
+	Protocol protocol;
+	char packetData[500];
 
 	void dump(void);
 };

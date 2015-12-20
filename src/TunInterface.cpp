@@ -34,13 +34,45 @@ TunInterface::~TunInterface() {
 
 void TunInterface::getOnePacket(Packet& packet) {
 	packet.packetType = RAW_PACKET;
-	packet.packetLen = read(tunInterfaceFd, &packet.packetData, 1520);
+	char packetData[500];
+	uint32_t dataLen;
+	dataLen = read(tunInterfaceFd, &packetData, 500);
+	packet.packetLen = dataLen - 4;
+	memcpy(&packet.packetData, &packetData[4], packet.packetLen-4);
+	uint16_t protocolId = packetData[2] << 8 | packetData[3];
+	switch (protocolId) {
+	case ETH_P_IP:
+		packet.protocol = IPV4;
+		break;
+	case ETH_P_IPV6:
+		packet.protocol = IPV6;
+		break;
+	default:
+		throw runtime_error("Failure: got a packet from an unknown protocol");
+	}
 	cerr << "Received packet of length " << packet.packetLen << endl;
 }
 
 void TunInterface::writeOnePacket(Packet& packet) {
 	assert(packet.packetType == RAW_PACKET);
-	int len = write(tunInterfaceFd, &packet.packetData, packet.packetLen);
+	char packetData[500];
+	memset(&packetData, 0, 2);
+	uint16_t protocolHeader;
+	switch(packet.protocol) {
+	case IPV4:
+		protocolHeader = ETH_P_IP;
+		break;
+	case IPV6:
+		protocolHeader = ETH_P_IPV6;
+		break;
+	default:
+		break;
+	}
+
+	packetData[2] = (protocolHeader & 0xFF00) >> 8;
+	packetData[3] = protocolHeader & 0xFF;
+	memcpy(&packetData[4], packet.packetData, packet.packetLen);
+	int len = write(tunInterfaceFd, &packetData, packet.packetLen+4);
 	cerr << "Send packet of length " << len << endl;
 }
 
