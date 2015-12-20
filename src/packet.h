@@ -1,6 +1,8 @@
 #ifndef __PACKET_H__
 #define __PACKET_H__
 
+#include <iostream>
+#include <iomanip>
 #include <stdint.h>
 
 enum PacketType {
@@ -17,6 +19,18 @@ struct Packet {
 	PacketType packetType;
 	uint32_t packetLen;
 	char packetData[1600];
+
+	void dump(void);
 };
+
+inline void Packet::dump(void) {
+	using namespace std;
+	for (uint32_t i = 0; i < packetLen; ++i) {
+		cout << setfill('0') << setw(2) << hex << (unsigned int)(unsigned char)packetData[i] << " ";
+		if ((i + 1) % 20 == 0)
+			cout << endl;
+	}
+	cout << endl;
+}
 
 #endif

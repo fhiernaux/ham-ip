@@ -11,6 +11,7 @@ int main(int argc, char **argv) {
 		TunInterface tunInterface("ham0");
 		while(1) {
 			tunInterface.getOnePacket(thisPacket);
+			thisPacket.dump();
 			tunInterface.writeOnePacket(thisPacket);
 		}
 	} catch (exception &e) {
