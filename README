@@ -1,0 +1,7 @@
+hamip - Tunnel interface to packet radio
+----------------------------------------
+ON4SEB <svancau@gmail.com>
+
+This acts as a gateway between a tun interface ham0 and
+a radio using a FSK modem.
+
