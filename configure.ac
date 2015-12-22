@@ -1,12 +1,14 @@
-AC_INIT([ham-ip], [0.01])
+dnl Process this file with autoconf to produce a configure script.
 
-AC_PREREQ([2.68])
-AC_CONFIG_SRCDIR([src/hamip.cpp])
-AC_CONFIG_HEADERS([config.h])
-AM_INIT_AUTOMAKE([1.11 subdir-objects -Wall -Werror])
-AC_CONFIG_MACRO_DIR([m4])
-AC_CONFIG_FILES([Makefile])
+AC_PREREQ(2.59)
+AC_INIT(ham-ip, 1.0)
+
+
+AC_CANONICAL_SYSTEM
+AM_INIT_AUTOMAKE()
+
 AC_PROG_CXX
 
+AC_CONFIG_FILES(Makefile src/Makefile)
 AC_OUTPUT
 
