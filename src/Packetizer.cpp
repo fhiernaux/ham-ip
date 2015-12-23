@@ -6,7 +6,7 @@
  */
 
 #include <string.h>
-#include <boost/crc.h>
+#include <boost/crc.hpp>
 #include "Packetizer.h"
 
 Packetizer::Packetizer(const char* callsign) {
@@ -69,7 +69,7 @@ void Packetizer::copyPacket(const Packet &inPacket) {
 
 void Packetizer::computeCrc(void) {
 	int computeLength = formattedPacket.packetLen - CRC_SIZE;
-	crc_ccitt_type packetCrc;
+	boost::crc_ccitt_type packetCrc;
 	packetCrc.process_bytes(&formattedPacket.packetData, computeLength);
 	uint16_t crc = packetCrc.checksum();
 	formattedPacket.packetData[computeLength] = (crc & 0xFF00) >> 8;
