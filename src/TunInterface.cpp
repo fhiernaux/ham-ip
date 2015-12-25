@@ -38,7 +38,7 @@ void TunInterface::getOnePacket(Packet& packet) {
 	uint32_t dataLen;
 	dataLen = read(tunInterfaceFd, &packetData, 500);
 	packet.packetLen = dataLen - 4;
-	memcpy(&packet.packetData, &packetData[4], packet.packetLen-4);
+	memcpy(&packet.packetData, &packetData[4], packet.packetLen);
 	uint16_t protocolId = packetData[2] << 8 | packetData[3];
 	switch (protocolId) {
 	case ETH_P_IP:
