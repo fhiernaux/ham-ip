@@ -1,0 +1,3 @@
+[submodule "minimodem"]
+	path = minimodem
+	url = https://github.com/kamalmostafa/minimodem.git
