@@ -27,9 +27,33 @@ struct Packet {
 	char packetData[500];
 
 	void dump(void);
+private:
+	void dumpHeader(void);
+	void dumpContent(void);
 };
 
 inline void Packet::dump(void) {
+	dumpHeader();
+	dumpContent();
+}
+
+inline void Packet::dumpHeader(void) {
+	using namespace std;
+
+	cout << "Packet type ";
+	switch (packetType) {
+	case RAW_PACKET:
+		cout << "RAW";
+		break;
+	case ENCAPSULATED_PACKET:
+		cout << "ENCAPSULATED";
+		break;
+	}
+
+	cout << " " << "Length " << dec << packetLen << endl;
+}
+
+inline void Packet::dumpContent(void) {
 	using namespace std;
 
 	for (uint32_t i = 0; i < packetLen; ++i) {
@@ -39,7 +63,6 @@ inline void Packet::dump(void) {
 	}
 	cout << endl;
 }
-
 
 // Encapsulation packet format
 #define HEADER_SIZE 1

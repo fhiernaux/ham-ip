@@ -14,8 +14,10 @@ int main(int argc, char **argv) {
 		Packetizer packetizer(callsign);
 		while(1) {
 			tunInterface.getOnePacket(thisPacket);
-			//thisPacket.dump();
+			thisPacket.dump();
 			packetizer.formatPacket(thisPacket).dump();
+			cerr << "----------------------------------------------------" << endl;
+
 			//tunInterface.writeOnePacket(thisPacket);
 		}
 	} catch (exception &e) {
