@@ -7,7 +7,9 @@ HAMIP_SRC = \
 	src/Depacketizer.cpp \
 	src/Depacketizer.h \
 	src/TunInterface.cpp \
-	src/TunInterface.h
+	src/TunInterface.h \
+	src/MinimodemSender.cpp \
+	src/MinimodemSender.h
 
 SIMPLEAUDIO_SRC = \
 	minimodem/src/simpleaudio.h		\

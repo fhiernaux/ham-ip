@@ -3,6 +3,7 @@
 #include "Packetizer.h"
 #include "Depacketizer.h"
 #include "TunInterface.h"
+#include "MinimodemSender.h"
 
 using namespace std;
 
@@ -15,12 +16,12 @@ int main(int argc, char **argv) {
 		const char callsign[] = "ON4SEB";
 		Packetizer packetizer(callsign);
 		Depacketizer depacketizer;
+		MinimodemSender minimodemSender;
 		while(1) {
 			tunInterface.getOnePacket(thisPacket);
 			thisPacket.dump();
 			formattedPacket = packetizer.formatPacket(thisPacket);
 			formattedPacket.dump();
-			depacketizer.unpack(formattedPacket).dump();
 			cerr << "----------------------------------------------------" << endl;
 
 			//tunInterface.writeOnePacket(thisPacket);
