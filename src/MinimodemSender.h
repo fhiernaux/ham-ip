@@ -14,10 +14,13 @@ extern "C" {
 #include "../minimodem/src/databits.h"
 }
 
+#include "packet.h"
+
 class MinimodemSender {
 public:
 	MinimodemSender();
 	virtual ~MinimodemSender();
+	void sendPacket(Packet &inPacket);
 
 protected:
 	simpleaudio *SimpleAudioOut;

@@ -22,6 +22,7 @@ int main(int argc, char **argv) {
 			thisPacket.dump();
 			formattedPacket = packetizer.formatPacket(thisPacket);
 			formattedPacket.dump();
+			minimodemSender.sendPacket(formattedPacket);
 			cerr << "----------------------------------------------------" << endl;
 
 			//tunInterface.writeOnePacket(thisPacket);
