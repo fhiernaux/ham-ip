@@ -1,9 +1,39 @@
 bin_PROGRAMS = hamip
-hamip_SOURCES = src/hamip.cpp src/packet.h src/Packetizer.cpp src/Packetizer.h src/Depacketizer.cpp src/Depacketizer.h src/TunInterface.cpp src/TunInterface.h
-AM_CPPFLAGS = $(BOOST_CPPFLAGS)
+HAMIP_SRC = \
+	src/hamip.cpp \
+	src/packet.h \
+	src/Packetizer.cpp \
+	src/Packetizer.h \
+	src/Depacketizer.cpp \
+	src/Depacketizer.h \
+	src/TunInterface.cpp \
+	src/TunInterface.h
+
+SIMPLEAUDIO_SRC = \
+	minimodem/src/simpleaudio.h		\
+	minimodem/src/simpleaudio_internal.h	\
+	minimodem/src/simpleaudio.c		\
+	minimodem/src/simple-tone-generator.c \
+	minimodem/src/simpleaudio-pulse.c	\
+	minimodem/src/simpleaudio-alsa.c	\
+	minimodem/src/simpleaudio-benchmark.c	\
+	minimodem/src/simpleaudio-sndfile.c
+
+DATABITS_SRC = \
+	minimodem/src/databits.h \
+	minimodem/src/databits_ascii.c \
+	minimodem/src/databits_binary.c
+
+FSK_SRC = \
+	minimodem/src/fsk.h \
+	minimodem/src/fsk.c
+
+hamip_SOURCES = $(HAMIP_SRC) $(SIMPLEAUDIO_SRC) $(DATABITS_SRC) $(FSK_SRC)
+hamip_LDADD = $(DEPS_LIBS)
+
+AM_CFLAGS = -Wall $(DEPS_CFLAGS)
+AM_CPPFLAGS = $(BOOST_CPPFLAGS) -Wall
 AM_LDFLAGS = $(BOOST_LDFLAGS)
 
 ACLOCAL_AMFLAGS = -I m4 -I build-aux --install
 EXTRA_DIST = m4/NOTES
-
-
