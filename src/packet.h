@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <stdint.h>
 #include <string.h>
+#include <boost/crc.hpp>
 
 // Encapsulation packet format
 #define CALLSIGN_SIZE 6
@@ -44,6 +45,8 @@ struct Packet {
 	char packetData[500];
 
 	void dump(void);
+	uint32_t getLength(void);
+	bool isValid(void);
 private:
 	void dumpHeader(void);
 	void dumpContent(void);
@@ -74,6 +77,20 @@ inline void Packet::dumpHeader(void) {
 	}
 
 	cout << " " << "Length " << dec << packetLen << endl;
+}
+
+inline bool Packet::isValid(void) {
+	int payloadLength = getLength();
+	unsigned short packetCrc = (unsigned char)packetData[CRC_POS(payloadLength)] << 8;
+	packetCrc |= (unsigned char)packetData[CRC_POS(payloadLength)+1];
+	boost::crc_ccitt_type computedCrc;
+	int packetLength = payloadLength + CALLSIGN_SIZE + LEN_SIZE + PROTOCOL_SIZE + SEQUENCE_SIZE;
+	computedCrc.process_bytes(packetData, packetLength);
+	return packetCrc == computedCrc.checksum();
+}
+
+inline uint32_t Packet::getLength(void) {
+	return packetData[LEN_POS];
 }
 
 inline void Packet::dumpContent(void) {

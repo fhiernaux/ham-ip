@@ -20,8 +20,6 @@ public:
 protected:
 	Packet extractedPacket;
 	void copyPacket(Packet &inPacket);
-	uint32_t extractPacketLength(Packet &inPacket);
-	bool isCrcValid(Packet &inPacket);
 };
 
 #endif /* SRC_DEPACKETIZER_H_ */
