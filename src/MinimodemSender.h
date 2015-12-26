@@ -24,6 +24,9 @@ public:
 
 protected:
 	simpleaudio *SimpleAudioOut;
+	void sendIdleTone(unsigned int count);
+	void sendHeaderTailByte(void);
+	void sendByte(unsigned char data);
 };
 
 #endif /* SRC_MINIMODEMSENDER_H_ */
