@@ -12,7 +12,6 @@
 Depacketizer::Depacketizer() {
 	extractedPacket.packetLen = 0;
 	extractedPacket.packetType = RAW_PACKET;
-
 }
 
 Depacketizer::~Depacketizer() {
@@ -42,7 +41,7 @@ bool Depacketizer::isCrcValid(Packet& inPacket) {
 	unsigned short packetCrc = (unsigned char)inPacket.packetData[CRC_POS(payloadLength)] << 8;
 	packetCrc |= (unsigned char)inPacket.packetData[CRC_POS(payloadLength)+1];
 	boost::crc_ccitt_type computedCrc;
-	int packetLength = payloadLength + HEADER_SIZE + CALLSIGN_SIZE + LEN_SIZE + PROTOCOL_SIZE;
+	int packetLength = payloadLength + CALLSIGN_SIZE + LEN_SIZE + PROTOCOL_SIZE + SEQUENCE_SIZE;
 	computedCrc.process_bytes(&inPacket.packetData, packetLength);
 	return packetCrc == computedCrc.checksum();
 }

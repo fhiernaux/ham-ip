@@ -9,9 +9,10 @@
 #include <boost/crc.hpp>
 #include "Packetizer.h"
 
-Packetizer::Packetizer(const char* callsign) {
+Packetizer::Packetizer(const char* callsign)
+	: packetCounter(0)
+{
 	formattedPacket.packetType = ENCAPSULATED_PACKET;
-	writeHeader();
 	copyCallsign(callsign);
 }
 
@@ -22,12 +23,9 @@ Packet& Packetizer::formatPacket(const Packet& inPacket) {
 	writeLength(inPacket);
 	writeProtocol(inPacket);
 	copyPacket(inPacket);
+	updatePacketCounter();
 	computeCrc();
 	return formattedPacket;
-}
-
-void Packetizer::writeHeader(void) {
-	formattedPacket.packetData[0] = 0x5A;
 }
 
 void Packetizer::copyCallsign(const char* callsign) {
@@ -36,10 +34,10 @@ void Packetizer::copyCallsign(const char* callsign) {
 }
 
 void Packetizer::writeLength(const Packet &inPacket) {
-	formattedPacket.packetLen = HEADER_SIZE
-			+CALLSIGN_SIZE
+	formattedPacket.packetLen = CALLSIGN_SIZE
 			+LEN_SIZE
 			+PROTOCOL_SIZE
+			+SEQUENCE_SIZE
 			+inPacket.packetLen
 			+CRC_SIZE;
 	formattedPacket.packetData[LEN_POS] = (char)inPacket.packetLen;
@@ -65,6 +63,11 @@ void Packetizer::writeProtocol(const Packet &inPacket) {
 
 void Packetizer::copyPacket(const Packet &inPacket) {
 	memcpy(&formattedPacket.packetData[PAYLOAD_POS], inPacket.packetData, inPacket.packetLen);
+}
+
+void Packetizer::updatePacketCounter(void) {
+	formattedPacket.packetData[SEQUENCE_POS] = packetCounter;
+	packetCounter++;
 }
 
 void Packetizer::computeCrc(void) {

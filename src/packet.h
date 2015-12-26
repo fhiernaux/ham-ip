@@ -4,6 +4,21 @@
 #include <iostream>
 #include <iomanip>
 #include <stdint.h>
+#include <string.h>
+
+// Encapsulation packet format
+#define CALLSIGN_SIZE 6
+#define LEN_SIZE 1
+#define PROTOCOL_SIZE 1
+#define SEQUENCE_SIZE 1
+#define CRC_SIZE 2
+
+#define CALLSIGN_POS 0
+#define LEN_POS (CALLSIGN_SIZE)
+#define PROTOCOL_POS (CALLSIGN_SIZE+LEN_SIZE)
+#define SEQUENCE_POS (CALLSIGN_SIZE+LEN_SIZE+PROTOCOL_SIZE)
+#define PAYLOAD_POS (CALLSIGN_SIZE+LEN_SIZE+PROTOCOL_SIZE+SEQUENCE_SIZE)
+#define CRC_POS(PAYLOAD_SIZE) (CALLSIGN_SIZE+LEN_SIZE+PROTOCOL_SIZE+SEQUENCE_SIZE+PAYLOAD_SIZE)
 
 enum PacketType {
 	RAW_PACKET,
@@ -17,8 +32,9 @@ enum Protocol {
 };
 
 /*** Frame format
- * Begin | Callsign | Len | Protocol | Payload | Checksum
- * 1B      6B         1B    1B         256B      2B
+ * A frame header of 0x5A is prepended by the modem
+ * Callsign | Len | Protocol | Packet Counter | Payload | Checksum
+ * 6B         1B    1B         1B               256B      2B
  */
 
 struct Packet {
@@ -46,8 +62,14 @@ inline void Packet::dumpHeader(void) {
 	case RAW_PACKET:
 		cout << "RAW";
 		break;
-	case ENCAPSULATED_PACKET:
-		cout << "ENCAPSULATED";
+	case ENCAPSULATED_PACKET: {
+		char callsign[CALLSIGN_SIZE];
+		strncpy(callsign, &packetData[CALLSIGN_POS], CALLSIGN_SIZE);
+		cout << "ENCAPSULATED from " << callsign;
+		break;
+	}
+	case INVALID_PACKET:
+		cout << "INVALID";
 		break;
 	}
 
@@ -64,19 +86,5 @@ inline void Packet::dumpContent(void) {
 	}
 	cout << endl;
 }
-
-// Encapsulation packet format
-#define HEADER_SIZE 1
-#define CALLSIGN_SIZE 6
-#define LEN_SIZE 1
-#define PROTOCOL_SIZE 1
-#define CRC_SIZE 2
-
-#define HEADER_POS 0
-#define CALLSIGN_POS HEADER_SIZE
-#define LEN_POS (HEADER_SIZE+CALLSIGN_SIZE)
-#define PROTOCOL_POS (HEADER_SIZE+CALLSIGN_SIZE+LEN_SIZE)
-#define PAYLOAD_POS (HEADER_SIZE+CALLSIGN_SIZE+LEN_SIZE+PROTOCOL_SIZE)
-#define CRC_POS(PAYLOAD_SIZE) (HEADER_SIZE+CALLSIGN_SIZE+LEN_SIZE+PROTOCOL_SIZE+PAYLOAD_SIZE)
 
 #endif

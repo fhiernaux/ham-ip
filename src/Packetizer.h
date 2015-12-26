@@ -19,11 +19,12 @@ public:
 
 protected:
 	Packet formattedPacket;
-	void writeHeader(void);
+	unsigned char packetCounter;
 	void copyCallsign(const char *callsign);
 	void writeLength(const Packet &inPacket);
 	void writeProtocol(const Packet &inPacket);
 	void copyPacket(const Packet &inPacket);
+	void updatePacketCounter(void);
 	void computeCrc(void);
 };
 
