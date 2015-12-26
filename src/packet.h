@@ -7,7 +7,8 @@
 
 enum PacketType {
 	RAW_PACKET,
-	ENCAPSULATED_PACKET
+	ENCAPSULATED_PACKET,
+	INVALID_PACKET
 };
 
 enum Protocol {

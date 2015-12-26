@@ -19,12 +19,13 @@ Depacketizer::~Depacketizer() {
 }
 
 Packet& Depacketizer::unpack(Packet& inPacket) {
-	if (isCrcValid(inPacket)) {
-		extractedPacket.packetLen = extractPacketLength(inPacket);
-		copyPacket(inPacket);
-	} else {
-		extractedPacket.packetLen = 0;
-	}
+	extractedPacket.packetLen = extractPacketLength(inPacket);
+	copyPacket(inPacket);
+	extractedPacket.packetType = RAW_PACKET;
+
+	if (!isCrcValid(inPacket))
+		extractedPacket.packetType = INVALID_PACKET;
+
 	return extractedPacket;
 }
 
