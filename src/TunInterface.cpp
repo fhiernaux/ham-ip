@@ -57,7 +57,7 @@ void TunInterface::writeOnePacket(Packet& packet) {
 	assert(packet.packetType == RAW_PACKET);
 	char packetData[500];
 	memset(&packetData, 0, 2);
-	uint16_t protocolHeader;
+	uint16_t protocolHeader = ETH_P_IP;
 	switch(packet.protocol) {
 	case IPV4:
 		protocolHeader = ETH_P_IP;
