@@ -7,6 +7,7 @@
 
 #include <string.h>
 #include <boost/crc.hpp>
+#include <ctype.h>
 #include "Packetizer.h"
 
 Packetizer::Packetizer(const char* callsign)
@@ -31,6 +32,8 @@ Packet& Packetizer::formatPacket(const Packet& inPacket) {
 void Packetizer::copyCallsign(const char* callsign) {
 	memset(&formattedPacket.packetData[CALLSIGN_POS], 0, CALLSIGN_SIZE);
 	strncpy(&formattedPacket.packetData[CALLSIGN_POS], callsign, CALLSIGN_SIZE);
+	for (int i = 0; i < CALLSIGN_SIZE; ++i)
+		formattedPacket.packetData[CALLSIGN_POS+i] = toupper(formattedPacket.packetData[CALLSIGN_POS+i]);
 }
 
 void Packetizer::writeLength(const Packet &inPacket) {
