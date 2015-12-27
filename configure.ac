@@ -51,5 +51,6 @@ option summary:
 
 BOOST_REQUIRE([1.22])
 BOOST_CRC
+BOOST_THREAD([mt-d])
 
 AC_OUTPUT

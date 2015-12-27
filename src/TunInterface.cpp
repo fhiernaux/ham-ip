@@ -21,7 +21,7 @@ using namespace std;
 TunInterface::TunInterface(const char* dev) {
 	createTunInterface(dev);
 	setMtu(150);
-	setTxQueueLen(10);
+	setTxQueueLen(2);
 }
 
 TunInterface::~TunInterface() {

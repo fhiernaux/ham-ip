@@ -51,7 +51,7 @@ void MinimodemSender::sendIdleTone(unsigned int count) {
 }
 
 void MinimodemSender::sendHeaderTailByte(void) {
-	sendByte(0x5A);
+	sendByte(0x7E);
 }
 
 void MinimodemSender::sendByte(unsigned char data) {
