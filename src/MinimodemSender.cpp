@@ -10,10 +10,12 @@
 
 using namespace std;
 
-#define POINT_PER_BIT 40
+#define POINT_PER_BIT 30
 #define SAMPLE_RATE 48000
-#define MARK_TONE 1200
-#define SPACE_TONE 2200
+#define F0_TONE 800
+#define F1_TONE 1600
+#define F2_TONE 2400
+#define F3_TONE 3200
 #define BITS_PER_SECONDS 1200
 
 MinimodemSender::MinimodemSender()
@@ -38,16 +40,15 @@ void MinimodemSender::sendPacket(Packet& inPacket) {
 	if (inPacket.packetType != ENCAPSULATED_PACKET)
 		throw runtime_error("Error: trying to send a non encapsulated packet");
 
-	sendIdleTone(2);
+	sendIdleTone(400);
 	sendHeaderTailByte();
 	for (unsigned int i = 0; i < inPacket.packetLen; ++i)
 		sendByte(inPacket.packetData[i]);
 	sendHeaderTailByte();
-	sendIdleTone(2);
 }
 
 void MinimodemSender::sendIdleTone(unsigned int count) {
-	simpleaudio_tone(SimpleAudioOut, MARK_TONE, POINT_PER_BIT*count);
+	simpleaudio_tone(SimpleAudioOut, F0_TONE, POINT_PER_BIT*count);
 }
 
 void MinimodemSender::sendHeaderTailByte(void) {
@@ -55,15 +56,31 @@ void MinimodemSender::sendHeaderTailByte(void) {
 }
 
 void MinimodemSender::sendByte(unsigned char data) {
-	simpleaudio_tone(SimpleAudioOut, SPACE_TONE, POINT_PER_BIT);
-	for (int i = 0; i < 8; ++i) {
+	simpleaudio_tone(SimpleAudioOut, F0_TONE, POINT_PER_BIT);
+	for (int i = 0; i < 4; ++i) {
 		float audioTone = 0.0;
-		if (data & 1)
-			audioTone = MARK_TONE;
-		else
-			audioTone = SPACE_TONE;
+		switch (data & 0x3) {
+		case 0:
+			audioTone = F0_TONE;
+			break;
+
+		case 1:
+			audioTone = F1_TONE;
+			break;
+
+		case 2:
+			audioTone = F2_TONE;
+			break;
+
+		case 3:
+			audioTone = F3_TONE;
+			break;
+
+		default:
+			break;
+		}
 		simpleaudio_tone(SimpleAudioOut, audioTone, POINT_PER_BIT);
-		data >>= 1;
+		data >>= 2;
 	}
-	simpleaudio_tone(SimpleAudioOut, MARK_TONE, POINT_PER_BIT);
+	simpleaudio_tone(SimpleAudioOut, F3_TONE, POINT_PER_BIT);
 }
