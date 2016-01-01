@@ -8,9 +8,10 @@
 
 using namespace std;
 
-TunInterface tunInterface("ham0");
+TunInterface *tunInterface = NULL;
 
 void sendThreadFunction(void) {
+	cerr << "Starting send thread" << endl;
 	Packet thisPacket;
 	Packet formattedPacket;
 	const char callsign[] = "ON4SEB";
@@ -18,7 +19,7 @@ void sendThreadFunction(void) {
 	MinimodemSender minimodemSender;
 
 	while(1) {
-		tunInterface.getOnePacket(thisPacket);
+		tunInterface->getOnePacket(thisPacket);
 		thisPacket.dump();
 		formattedPacket = packetizer.formatPacket(thisPacket);
 		formattedPacket.dump();
@@ -31,7 +32,9 @@ void sendThreadFunction(void) {
 
 int main(int argc, char **argv) {
 	try {
-		sendThreadFunction();
+		tunInterface = new TunInterface("ham0");
+		boost::thread sendThread(sendThreadFunction);
+		sendThread.join();
 	} catch (exception &e) {
 		cout << "Exception occurred " << e.what() << endl;
 	}
