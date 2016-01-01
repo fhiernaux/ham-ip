@@ -10,18 +10,20 @@
 
 using namespace std;
 
-#define POINT_PER_BIT 30
+
 #define SAMPLE_RATE 48000
 #define F0_TONE 800
 #define F1_TONE 1600
 #define F2_TONE 2400
 #define F3_TONE 3200
-#define BITS_PER_SECONDS 1200
+#define SYMS_PER_SECONDS 1600
+#define POINT_PER_BIT (SAMPLE_RATE/SYMS_PER_SECONDS)
 
 MinimodemSender::MinimodemSender()
 	: SimpleAudioOut(NULL) {
 	char streamName[] = "Audio Output";
 	char applicationName[] = "";
+	simpleaudio_tone_init(4096, 1.0);
 	SimpleAudioOut = simpleaudio_open_stream(SA_BACKEND_PULSEAUDIO,
 			NULL, SA_STREAM_PLAYBACK, SA_SAMPLE_FORMAT_S16,
 			SAMPLE_RATE, 1, applicationName, streamName);
