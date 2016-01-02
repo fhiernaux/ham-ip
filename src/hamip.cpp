@@ -20,13 +20,14 @@ void sendThreadFunction(void) {
 
 	while(1) {
 		tunInterface->getOnePacket(thisPacket);
-		thisPacket.dump();
 		formattedPacket = packetizer.formatPacket(thisPacket);
-		formattedPacket.dump();
 		minimodemSender.sendPacket(formattedPacket);
-		cerr << "----------------------------------------------------" << endl;
 
-		//tunInterface.writeOnePacket(thisPacket);
+#ifdef TX_DEBUG
+		thisPacket.dump();
+		formattedPacket.dump();
+		cerr << "----------------------------------------------------" << endl;
+#endif
 	}
 }
 
