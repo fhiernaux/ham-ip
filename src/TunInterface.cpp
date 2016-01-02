@@ -33,6 +33,7 @@ TunInterface::~TunInterface() {
 }
 
 void TunInterface::getOnePacket(Packet& packet) {
+	boost::lock_guard<boost::mutex> readLockguard(readWriteMutex);
 	packet.packetType = RAW_PACKET;
 	char packetData[500];
 	uint32_t dataLen;
@@ -54,6 +55,7 @@ void TunInterface::getOnePacket(Packet& packet) {
 }
 
 void TunInterface::writeOnePacket(Packet& packet) {
+	boost::lock_guard<boost::mutex> writeLockguard(readWriteMutex);
 	assert(packet.packetType == RAW_PACKET);
 	char packetData[500];
 	memset(&packetData, 0, 2);

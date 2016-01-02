@@ -10,6 +10,8 @@
 
 #include <net/if.h>
 #include <linux/if_tun.h>
+#include <boost/thread/mutex.hpp>
+#include <boost/thread/lock_guard.hpp>
 
 #include "packet.h"
 
@@ -27,6 +29,7 @@ protected:
 	void createTunInterface(const char *dev);
 	void setMtu(int mtu);
 	void setTxQueueLen(int txQLen);
+	boost::mutex readWriteMutex;
 };
 
 #endif /* TUNINTERFACE_H_ */
