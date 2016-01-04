@@ -21,16 +21,7 @@ SIMPLEAUDIO_SRC = \
 	minimodem/src/simpleaudio-benchmark.c	\
 	minimodem/src/simpleaudio-sndfile.c
 
-DATABITS_SRC = \
-	minimodem/src/databits.h \
-	minimodem/src/databits_ascii.c \
-	minimodem/src/databits_binary.c
-
-FSK_SRC = \
-	minimodem/src/fsk.h \
-	minimodem/src/fsk.c
-
-hamip_SOURCES = $(HAMIP_SRC) $(SIMPLEAUDIO_SRC) $(DATABITS_SRC) $(FSK_SRC)
+hamip_SOURCES = $(HAMIP_SRC) $(SIMPLEAUDIO_SRC)
 hamip_LDADD = $(DEPS_LIBS) $(BOOST_THREAD_LIBS)
 hamip_CFLAGS = $(DEPS_CFLAGS)
 hamip_CPPFLAGS = $(BOOST_CPPFLAGS) -Wall
