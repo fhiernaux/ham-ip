@@ -9,7 +9,9 @@ HAMIP_SRC = \
 	src/TunInterface.cpp \
 	src/TunInterface.h \
 	src/MinimodemSender.cpp \
-	src/MinimodemSender.h
+	src/MinimodemSender.h \
+	src/Configuration.cpp \
+	src/Configuration.h
 
 SIMPLEAUDIO_SRC = \
 	minimodem/src/simpleaudio.h		\
@@ -22,10 +24,10 @@ SIMPLEAUDIO_SRC = \
 	minimodem/src/simpleaudio-sndfile.c
 
 hamip_SOURCES = $(HAMIP_SRC) $(SIMPLEAUDIO_SRC)
-hamip_LDADD = $(DEPS_LIBS) $(BOOST_THREAD_LIBS)
+hamip_LDADD = $(DEPS_LIBS) $(BOOST_THREAD_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS)
 hamip_CFLAGS = $(DEPS_CFLAGS)
 hamip_CPPFLAGS = $(BOOST_CPPFLAGS) -Wall
-hamip_LDFLAGS = $(BOOST_THREAD_LDFLAGS)
+hamip_LDFLAGS = $(BOOST_THREAD_LDFLAGS) $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
 
 ACLOCAL_AMFLAGS = -I m4 -I build-aux --install
 EXTRA_DIST = m4/NOTES
