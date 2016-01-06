@@ -106,6 +106,7 @@ void TunInterface::createTunInterface(const char* dev) {
 }
 
 void TunInterface::setMtu(int mtu) {
+	boost::lock_guard<boost::mutex> configLockguard(readWriteMutex);
 	interfaceId.ifr_mtu = mtu;
 	int err;
 	if ((err = ioctl(configSocketFd, SIOCSIFMTU, (void *) &interfaceId)) < 0) {
@@ -117,6 +118,7 @@ void TunInterface::setMtu(int mtu) {
 }
 
 void TunInterface::setTxQueueLen(int txQLen) {
+	boost::lock_guard<boost::mutex> configLockguard(readWriteMutex);
 	interfaceId.ifr_qlen = txQLen;
 	int err;
 	if ((err = ioctl(configSocketFd, SIOCSIFTXQLEN, (void *) &interfaceId)) < 0) {

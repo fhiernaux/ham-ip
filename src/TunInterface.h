@@ -22,14 +22,14 @@ public:
 	void getOnePacket(Packet &packet);
 	void writeOnePacket(Packet &packet);
 	void setInterfaceLinkUp(bool interfaceUp);
+	void setMtu(int mtu);
+	void setTxQueueLen(int txQLen);
 
 protected:
 	int tunInterfaceFd;
 	int configSocketFd;
 	struct ifreq interfaceId;
 	void createTunInterface(const char *dev);
-	void setMtu(int mtu);
-	void setTxQueueLen(int txQLen);
 	boost::mutex readWriteMutex;
 };
 
