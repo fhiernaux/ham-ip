@@ -126,3 +126,22 @@ void TunInterface::setTxQueueLen(int txQLen) {
 		throw runtime_error("Failed to configure TUN interface MTU");
 	}
 }
+
+void TunInterface::setInterfaceLinkUp(bool interfaceUp) {
+	boost::lock_guard<boost::mutex> configLockguard(readWriteMutex);
+	int err;
+	if ((err = ioctl(configSocketFd, SIOCGIFFLAGS, (void *) &interfaceId)) < 0) {
+		close(tunInterfaceFd);
+		throw runtime_error("Failed to get interface flags");
+	}
+
+	if (interfaceUp)
+		interfaceId.ifr_flags |= IFF_UP;
+	else
+		interfaceId.ifr_flags &= ~IFF_UP;
+
+	if ((err = ioctl(configSocketFd, SIOCSIFFLAGS, (void *) &interfaceId)) < 0) {
+		close(tunInterfaceFd);
+		throw runtime_error("Failed to change interface state");
+	}
+}

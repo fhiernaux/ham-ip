@@ -21,6 +21,7 @@ public:
 	virtual ~TunInterface();
 	void getOnePacket(Packet &packet);
 	void writeOnePacket(Packet &packet);
+	void setInterfaceLinkUp(bool interfaceUp);
 
 protected:
 	int tunInterfaceFd;

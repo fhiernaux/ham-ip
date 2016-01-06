@@ -38,6 +38,7 @@ int main(int argc, char **argv) {
 		hamipConfiguration = new Configuration(argc, argv, "hamip.cfg");
 		tunInterface = new TunInterface(hamipConfiguration->getInterfaceName());
 		boost::thread sendThread(sendThreadFunction);
+		tunInterface->setInterfaceLinkUp(true);
 		sendThread.join();
 	} catch (exception &e) {
 		cout << "Exception occurred " << e.what() << endl;
