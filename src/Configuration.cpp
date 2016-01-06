@@ -5,16 +5,18 @@
  *      Author: seb
  */
 
-#include <string>
 #include <iostream>
+#include <fstream>
 #include <stdlib.h>
 #include "Configuration.h"
 
 using namespace std;
 
-Configuration::Configuration(int argc, char **argv) {
+Configuration::Configuration(int argc, char **argv, string filename) {
 	initializeOptions();
 	parseCommandLine(argc, argv);
+	parseFile(filename);
+	updateStore();
 	checkArguments();
 }
 
@@ -32,7 +34,6 @@ void Configuration::initializeOptions(void) {
 
 void Configuration::parseCommandLine(int argc, char** argv) {
 	po::store(po::parse_command_line(argc, argv, optionDescription), programOptions);
-	po::notify(programOptions);
 }
 
 void Configuration::showHelp(void) {
@@ -46,6 +47,19 @@ const char *Configuration::getCallsign(void) {
 
 const char* Configuration::getInterfaceName(void) {
 	return programOptions["interface_name"].as<string>().c_str();
+}
+
+void Configuration::parseFile(std::string fileName) {
+	ifstream ifs(fileName.c_str());
+	if (ifs.good()) {
+		po::store(po::parse_config_file(ifs, optionDescription), programOptions);
+	} else {
+		cerr << "Warning: no configuration file found" << endl;
+	}
+}
+
+void Configuration::updateStore(void) {
+	po::notify(programOptions);
 }
 
 void Configuration::checkArguments(void) {

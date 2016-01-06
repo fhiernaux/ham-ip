@@ -35,7 +35,7 @@ void sendThreadFunction(void) {
 
 int main(int argc, char **argv) {
 	try {
-		hamipConfiguration = new Configuration(argc, argv);
+		hamipConfiguration = new Configuration(argc, argv, "hamip.cfg");
 		tunInterface = new TunInterface(hamipConfiguration->getInterfaceName());
 		boost::thread sendThread(sendThreadFunction);
 		sendThread.join();
