@@ -10,8 +10,6 @@
 
 extern "C" {
 #include "../minimodem/src/simpleaudio.h"
-#include "../minimodem/src/fsk.h"
-#include "../minimodem/src/databits.h"
 }
 
 #include "packet.h"
