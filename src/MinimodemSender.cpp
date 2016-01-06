@@ -21,7 +21,7 @@ using namespace std;
 
 MinimodemSender::MinimodemSender()
 	: SimpleAudioOut(NULL) {
-	char streamName[] = "Audio Output";
+	char streamName[] = "HamIP Modulation Output";
 	char applicationName[] = "";
 	simpleaudio_tone_init(4096, 1.0);
 	SimpleAudioOut = simpleaudio_open_stream(SA_BACKEND_PULSEAUDIO,
